@@ -1,0 +1,17 @@
+# Temporary or cache files
+*.tmp
+*.temp
+*.cache
+*.bak
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+# OS generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
+# Others
+*.log

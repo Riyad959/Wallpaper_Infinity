@@ -1,0 +1,5 @@
+pygame
+pygame_gui
+tkinter
+
+# cmd te eta lekbi - python art_generator.py
