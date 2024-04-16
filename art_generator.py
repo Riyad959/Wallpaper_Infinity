@@ -702,3 +702,8 @@ class Canvas:
         # mmpty
         if style == art_styles_list[6]:     
             pass
+        
+        
+        
+def draw_menu(window, color_palette):
+     
