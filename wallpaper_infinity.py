@@ -707,7 +707,321 @@ class Canvas:
         
         
         
+    # curve all
+    
+    def generate_curves(self, complexity, cp, style, layer, magnitude):
+        if style == art_styles_list[0]:
+            multiples = magnitude // 5
+            for i in range(complexity//5):
+                current_color = cp[randint(0, len(cp)-1)]
+                point_count = 5
+                multiples_points = []
+                for _ in range(multiples):
+                    multiples_points.append([])
+                for j in range(point_count):
+                    x = randint(0, self.width)
+                    y = randint(0, self.height)
+                    for k in range(multiples):
+                        multiples_points[k].append((x, y+k))
+
+                for k in range(multiples):
+                    pg.gfxdraw.bezier(layer, multiples_points[k], 5, pg.Color(current_color))
         
+        
+        
+        # horizontal
+        if style == art_styles_list[1]:     
+            multiples = magnitude // 5
+            point_count = 5
+            row_count = complexity // 2
+            interval_y = (self.height // row_count)
+            interval_x = (self.width // point_count)
+            row_color_one = cp[randint(0, len(cp)-1)]
+            row_color_two = cp[randint(0, len(cp)-1)]
+
+            for i in range(row_count):
+                current_color = row_color_one if i % 2 == 0 else row_color_two
+
+                multiples_points = []
+                for k in range(multiples):
+                    multiples_points.append([])
+
+                for j in range(point_count+2):
+                    y_pos = randint(((i-2)*interval_y), ((i+2)*interval_y) )
+                    x_pos = randint((j-1)*interval_x, (j*interval_x))
+                    for k in range(multiples):
+                        multiples_points[k].append((x_pos, y_pos+k))
+
+                for k in range(multiples):
+                    pg.gfxdraw.bezier(layer, multiples_points[k], 5, pg.Color(current_color))
+                    
+             
+                    
+        # vertical
+        if style == art_styles_list[2]:     
+            point_count = 5
+            col_count = complexity // 2
+            multiples = magnitude // 5
+            interval_x = (self.height // col_count) * 2
+            interval_y = (self.width // point_count)
+            col_color_one = cp[randint(0, len(cp)-1)]
+            col_color_two = cp[randint(0, len(cp)-1)]
+
+            for i in range(col_count):
+                current_color = col_color_one if i % 2 == 0 else col_color_two
+
+                multiples_points = []
+                for k in range(multiples):
+                    multiples_points.append([])
+
+                for j in range(point_count+2):
+                    y_pos = randint((j-1)*interval_y, j*interval_y)
+                    x_pos = randint((i-1)*interval_x, (i+1)*interval_x)
+                    for k in range(multiples):
+                        multiples_points[k].append((x_pos+k, y_pos))
+
+                for k in range(multiples):
+                    pg.gfxdraw.bezier(layer, multiples_points[k], 5, pg.Color(current_color))
+
+
+
+        # mosaic
+        if style == art_styles_list[3]:     
+            row_curve_count = int(complexity // 2)
+            row_count = complexity // 3
+            x_interval = self.width // row_curve_count
+            y_interval = self.height // row_count
+            multiples = magnitude // 5
+            color_one = cp[randint(0, len(cp) - 1)]
+            color_two = cp[randint(0, len(cp) - 1)]
+            while color_two == color_one:
+                color_two = cp[randint(0, len(cp) - 1)]
+            for i in range(row_count):
+                for j in range(row_curve_count):
+                    current_color = color_one if (i + j) % 2 == 0 else color_two
+                    x_area = (x_interval * j, x_interval * (j + 1))
+                    y_area = (y_interval * i, y_interval * (i + 1))
+                    point_count = 4
+                    multiples_points = []
+                    for m in range(multiples):
+                        multiples_points.append([])
+
+                    for k in range(point_count):
+                        x = randint(x_area[0], x_area[1])
+                        y = randint(y_area[0], y_area[1])
+                        for m in range(multiples):
+                            multiples_points[m].append((x, y+m))
+
+                    for m in range(multiples):
+                        pg.gfxdraw.bezier(layer, multiples_points[m], 5, pg.Color(current_color))
+
+        
+        
+        # corner
+        if style == art_styles_list[4]:     
+            corner_starts = [((0, self.width//3),(-1, 0)),
+                             ((2*self.width//3, self.width),(-1, 0)),
+                             ((2*self.width//3, self.width),(self.height, self.height+1)),
+                             ((0, self.width//3),(self.height, self.height+1))]
+            corner_ends = [((-1, 0),(0, self.height//2)),
+                           ((self.width, self.width+1),(0, self.height//2)),
+                           ((self.width, self.width+1),(self.height//2, self.height)),
+                           ((-1, 0),(self.height//2, self.height))]
+            multiples = magnitude // 5
+            point_count = 2
+            x_area = [0, 0]
+            y_area = [0, 0]
+            for i in range(complexity//2):
+                corner = randint(0, 3)
+
+                if corner == 0: x_area = [0, self.width//3]; y_area = [0, self.height//2]
+                if corner == 1: x_area = [2*self.width//3, self.width]; y_area = [0, self.height//2]
+                if corner == 2: x_area = [2*self.width//3, self.width]; y_area = [self.height//2, self.height]
+                if corner == 3: x_area = [0, self.width//3]; y_area = [self.height//2, self.height]
+
+                current_color = cp[randint(0, len(cp)-1)]
+
+                multiples_points = []
+                first_point = (randint(corner_starts[corner][0][0], corner_starts[corner][0][1]),
+                               randint(corner_starts[corner][1][0], corner_starts[corner][1][1]))
+                last_point = (randint(corner_ends[corner][0][0], corner_ends[corner][0][1]),
+                              randint(corner_ends[corner][1][0], corner_ends[corner][1][1]))
+                for k in range(multiples):
+                    multiples_points.append([first_point])
+
+                for j in range(point_count):
+                    x = randint(x_area[0], x_area[1])
+                    y = randint(y_area[0], y_area[1])
+
+                    for k in range(multiples):
+                        multiples_points[k].append((x+k, y))
+                for k in range(multiples):
+                    multiples_points[k].append(last_point)
+
+                for k in range(multiples):
+                    pg.gfxdraw.bezier(layer, multiples_points[k], 5, pg.Color(current_color))
+
+        
+        
+        # center
+        if style == art_styles_list[5]:     
+            curve_count = complexity // 5
+            multiples = magnitude // 5
+            point_count = 5
+            for i in range(curve_count):
+                side = randint(0, 3)
+                multiples_points = []
+                for k in range(multiples):
+                    multiples_points.append([(self.width//2, self.height//2)])
+
+                current_color = cp[randint(0, len(cp)-1)]
+                x, y = 0, 0
+                for j in range(point_count):
+                    if side == 0:
+                        x = randint(self.width//2+20*j, self.width)
+                        y = randint(0, self.height)
+                    elif side == 1:
+                        x = randint(0, self.width)
+                        y = randint(0, self.height // 2 - 20 * j)
+                    elif side == 2:
+                        x = randint(0, self.width//2-20*j)
+                        y = randint(0, self.height)
+                    elif side == 3:
+                        x = randint(0, self.width)
+                        y = randint(self.height // 2 + 20 * j, self.height)
+
+                    for k in range(multiples):
+                        multiples_points[k].append((x, y+k))
+
+                for k in range(multiples):
+                    pg.gfxdraw.bezier(layer, multiples_points[k], 5, pg.Color(current_color))
+
+        
+        # empty
+        if style == art_styles_list[6]:     
+            pass
+        
+        
+        
+        
+    # dot all
+    
+    def generate_dots(self, complexity, cp, style, layer, magnitude):
+        
+        
+        # chaotic
+        if style == art_styles_list[0]:     
+            for i in range(complexity*20):
+                centerX = randint(-25, self.width + 25)
+                centerY = randint(-25, self.height + 25)
+                current_color = cp[randint(0, len(cp) - 1)]
+                pg.draw.circle(layer, pg.Color(current_color), (centerX, centerY), magnitude[1]//30 + 2)
+
+        
+        # horizontal
+        if style == art_styles_list[1]:     
+            row_dot_count = complexity * 2
+            row_count = complexity // 2
+            interval = self.height // row_count
+            row_colour_one = cp[randint(0, len(cp) - 1)]
+            row_colour_two = cp[randint(0, len(cp) - 1)]
+            for i in range(row_count+1):
+                for j in range(row_dot_count):
+                    current_color = row_colour_one if i % 2 == 0 else row_colour_two
+                    centerY = i * interval + 5
+                    centerX = randint(0, self.width)
+                    pg.draw.circle(layer, pg.Color(current_color), (centerX, centerY), magnitude[1]//30 + 2)
+
+        
+        
+        
+        # vertical
+        if style == art_styles_list[2]:     
+            row_dot_count = complexity * 2
+            row_count = complexity // 2
+            interval = self.width // row_count
+            row_colour_one = cp[randint(0, len(cp) - 1)]
+            row_colour_two = cp[randint(0, len(cp) - 1)]
+            while row_colour_two == row_colour_one:
+                row_colour_two = cp[randint(0, len(cp) - 1)]
+            for i in range(row_count+1):
+                for j in range(row_dot_count):
+                    current_color = row_colour_one if i % 2 == 0 else row_colour_two
+                    centerX = i * interval + 5
+                    centerY = randint(0, self.width)
+                    pg.draw.circle(layer, pg.Color(current_color), (centerX, centerY), magnitude[1]//30 + 2)
+
+        
+        
+        
+        # mosaic
+        if style == art_styles_list[3]:     
+            row_dot_count = complexity * 5
+            interval = self.width // row_dot_count * 2
+            row_count = self.height // interval + 5
+            color_one = cp[randint(0, len(cp)-1)]
+            color_two = cp[randint(0, len(cp)-1)]
+            while color_two == color_one:
+                color_two = cp[randint(0, len(cp) - 1)]
+            for i in range(row_count):
+                for j in range(row_dot_count):
+                    current_color = color_one if (i+j) % 2 == 0 else color_two
+                    centerX = 2 + j * interval
+                    centerY = 2 + i * interval
+                    pg.draw.circle(layer, pg.Color(current_color), (centerX, centerY), magnitude[1]//30 + 2)
+
+        
+        
+        
+        # corner
+        if style == art_styles_list[4]:     
+            for i in range(complexity * 8):
+                current_color = cp[randint(0, len(cp) - 1)]
+                corner = randint(0, 3)
+                x_area, y_area = (0, 0), (0, 0)
+                if corner == 0:
+                    x_area, y_area = (0, self.width // 3), (0, self.height // 3)
+                if corner == 1:
+                    x_area, y_area = (self.width // 1.5, self.width), (0, self.height // 3)
+                if corner == 2:
+                    x_area, y_area = (self.width // 1.5, self.width), (self.height // 1.5, self.height)
+                if corner == 3:
+                    x_area, y_area = (0, self.width // 3), (self.height // 1.5, self.height)
+
+                posX = randint(x_area[0], x_area[1])
+                posY = randint(y_area[0], y_area[1])
+
+                pg.draw.circle(layer, pg.Color(current_color), (posX, posY), magnitude[1]//30 + 2)
+
+        
+        
+        # center
+        if style == art_styles_list[5]:     
+            in_x_area, in_y_area = (self.width // 4, 3 * self.width // 4), (self.height // 4, 3 * self.height // 4)
+            out_x_area, out_y_area = (self.width // 6, 5 * self.width // 6), (self.height // 6, 5 * self.height // 6)
+
+            for i in range(complexity * 4):
+                random_number = randint(0, 5)
+                if random_number < 4:
+                    center_x = randint(in_x_area[0], in_x_area[1])
+                    center_y = randint(in_y_area[0], in_y_area[1])
+                else:
+                    center_x = randint(out_x_area[0], out_x_area[1])
+                    center_y = randint(out_y_area[0], out_y_area[1])
+
+                current_color = cp[randint(0, len(cp) - 1)]
+                pg.draw.circle(layer, pg.Color(current_color), (center_x, center_y), magnitude[1]//30 + 2)
+
+        if style == art_styles_list[6]:     # Empty
+            pass
+    
+    
+    
+    
+    
+    
+    
+    
     def generate_bg(self, color):
         self.bg_layer.fill(pg.Color(color))
 
@@ -728,6 +1042,27 @@ class Canvas:
 
         if art_shapes_list[0] == art_shape:
             self.generate_lines(complexity, color_palette, art_style, layer, magnitude)
+        if art_shapes_list[1] == art_shape:
+            self.generate_circles(complexity, color_palette, art_style, layer, magnitude, 0)
+
+        if art_shapes_list[2] == art_shape:
+            self.generate_squares(complexity, color_palette, art_style, layer, magnitude)
+
+        if art_shapes_list[3] == art_shape:
+            self.generate_polygons(complexity, color_palette, art_style, layer, magnitude, 1)
+
+        if art_shapes_list[4] == art_shape:
+            self.generate_polygons(complexity, color_palette, art_style, layer, magnitude, 0)
+
+        if art_shapes_list[5] == art_shape:
+            self.generate_dots(complexity, color_palette, art_style, layer, magnitude)
+
+        if art_shapes_list[6] == art_shape:
+            self.generate_curves(complexity, color_palette, art_style, layer, magnitude[1])
+
+        if art_shapes_list[7] == art_shape:
+            self.generate_circles(complexity, color_palette, art_style, layer, magnitude, 1)
+
 
     def blit_to_canvas(self):
         self.canvas.blit(self.bg_layer, (0, 0))
