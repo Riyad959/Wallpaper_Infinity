@@ -706,4 +706,34 @@ class Canvas:
         
         
 def draw_menu(window, color_palette):
-     
+    ui_h1_color = pg.Color("#000000")
+    ui_color = pg.Color("#000000")
+
+    # Color  back
+    pg.draw.rect(window, pg.Color("#FFC7C7"), (18, 410, 252, 95))        
+    # Layer 1 back
+    pg.draw.rect(window, pg.Color("#FFC7C7"), (18, 195, 252, 190))      
+    
+    # name
+    text_to_screen(window=window, text="ABSTRACT ART GENERATOR", color=ui_h1_color, pos=(430, 35), font_size=40)
+    
+    # color_section
+    text_to_screen(window=window, text="COLOR PALETTE", color=ui_h1_color, pos=(60, 425), font_size=18)
+    for i, color in enumerate(color_palette):
+        pg.draw.rect(window, (0, 0, 0), (60+(i*50), 475, 26, 26))
+        pg.draw.rect(window, pg.Color(color), (63+(i*50), 478, 20, 20))
+        
+    # layer 1 sevtion
+    text_to_screen(window=window, text="LAYER ONE STYLE", color=ui_h1_color, pos=(60, 205), font_size=18)
+    text_to_screen(window=window, text="LAYER ONE COMPLEXITY", color=ui_color, pos=(60, 290), font_size=14)
+    text_to_screen(window=window, text="LAYER ONE SHAPE SIZE", color=ui_color, pos=(60, 340), font_size=14)
+   
+    # Layer 2 section
+    pg.draw.rect(window, pg.Color("#FFC7C7"), (SW-260, 215, 252, 190))
+    text_to_screen(window=window, text="LAYER TWO STYLE", color=ui_h1_color, pos=(SW-220, 220), font_size=18)
+    text_to_screen(window=window, text="LAYER TWO COMPLEXITY", color=ui_color, pos=(SW-220, 300), font_size=14)
+    text_to_screen(window=window, text="LAYER TWO SHAPE SIZE", color=ui_color, pos=(SW-220, 350), font_size=14)
+    
+    # resulation/output
+    text_to_screen(window=window, text="RESOLUTION", color=ui_color, pos=(SW-215, 450), font_size=24)
+    
