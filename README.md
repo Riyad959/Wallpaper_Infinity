@@ -47,7 +47,7 @@
 
   
 ## Contact
-- GitHub [@riyad959](https://github.com/riyad959)
+GitHub [@riyad959](https://github.com/riyad959)
 [![Mail Badge](https://img.shields.io/badge/riyadulislam959@gmail.com-c14438?style=for-the-badge&logo=Gmail&logoColor=white&link=riyadulislam959@gmail.com)](mailto:riyadulislam959@gmail.com)
 <a href="https://discord.com/users/674847774046683157" target="_blank"><img src="https://img.shields.io/badge/riyad__959-7289DA?style=for-the-badge&logo=discord&logoColor=white" target="_blank"></a>
 <a href="https://www.linkedin.com/in/riyadul-islam-11a18a28a" target="_blank"><img src="https://img.shields.io/badge/-Riyadul Islam-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank"></a> 
