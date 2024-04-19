@@ -13,13 +13,14 @@ pg.freetype.init()
 
 SW,SH = 1280,720
 window= pg.display.set_mode((SW,SH))
+ui_manager = pgui.UIManager((SW, SH))
 # app name
 pg.display.set_caption("Wallpaper_Infinity")
 # logo - pore
 logo = pg.image.load("assets/Logo.png")
 pg.display.set_icon(logo)
 # backgroud colr
-background_color = pg.Color("#91e7eb")
+background_color = pg.Color("#F9F7F7")
 
 # font design
 xs_font = pg.freetype.Font("Poppins-Regular.ttf", 12)
@@ -88,7 +89,7 @@ class Canvas:
         tkinter_window = Tk()
         tkinter_window.withdraw()
 
-        available_formats = [("some name", "*.png")]
+        available_formats = [("Portable Network Graphics", "*.png")]
         filename = asksaveasfilename(title="Export File", filetypes=available_formats)
 
         if filename:
@@ -705,6 +706,58 @@ class Canvas:
         
         
         
+        
+        
+    def generate_bg(self, color):
+        self.bg_layer.fill(pg.Color(color))
+
+    def generate_fg(self, overlay):
+        self.clean_layer(self.fg_layer)
+        self.fg_layer.blit(overlay, (0, 0))
+        self.blit_to_canvas()
+
+    def generate_layer_one(self, art_style, art_shape, color_palette, complexity, magnitude):
+        self.generate_art(self.layer_one, art_style, art_shape, color_palette, complexity, magnitude)
+
+    def generate_layer_two(self, art_style, art_shape, color_palette, complexity, magnitude):
+        self.generate_art(self.layer_two, art_style, art_shape, color_palette, complexity, magnitude)
+
+    def generate_art(self, layer, art_style, art_shape, color_palette, complexity, magnitude):
+        self.clean_layer(layer)
+        layer.set_colorkey((0, 0, 0))
+
+        if art_shapes_list[0] == art_shape:
+            self.generate_lines(complexity, color_palette, art_style, layer, magnitude)
+
+    def blit_to_canvas(self):
+        self.canvas.blit(self.bg_layer, (0, 0))
+        self.canvas.blit(self.layer_one, (0, 0))
+        self.canvas.blit(self.layer_two, (0, 0))
+        self.canvas.blit(self.fg_layer, (0, 0))
+        self.canvas.convert()
+        self.display_canvas = pg.transform.smoothscale(self.canvas, self.display_size)
+
+    def draw(self, window):
+        window.blit(self.display_canvas, self.dsPos)
+
+
+p1 = Palette()
+c1 = Canvas((3840, 2160), (int(SW//1.8), int(SH//1.8)))
+
+current_color_palette = p1.get_random_palette()
+current_palette_name = p1.get_name_of_palette(current_color_palette)
+layer_one_style = "Striped Vertical"
+layer_one_shape = "Lines"
+layer_two_style = "Cornered"
+layer_two_shape = "Rings"
+layer_one_complexity = 15
+layer_two_complexity = 15
+layer_one_magnitude = [50, 400]
+layer_two_magnitude = [50, 400]
+
+
+
+export_resolution = resolutions_list[0]
 def draw_menu(window, color_palette):
     ui_h1_color = pg.Color("#000000")
     ui_color = pg.Color("#000000")
@@ -715,7 +768,7 @@ def draw_menu(window, color_palette):
     pg.draw.rect(window, pg.Color("#FFC7C7"), (18, 195, 252, 190))      
     
     # name
-    text_to_screen(window=window, text="ABSTRACT ART GENERATOR", color=ui_h1_color, pos=(430, 35), font_size=40)
+    text_to_screen(window=window, text="Wallpaper  Infinity", color=ui_h1_color, pos=(430, 35), font_size=40)
     
     # color_section
     text_to_screen(window=window, text="COLOR PALETTE", color=ui_h1_color, pos=(60, 425), font_size=18)
@@ -737,3 +790,181 @@ def draw_menu(window, color_palette):
     # resulation/output
     text_to_screen(window=window, text="RESOLUTION", color=ui_color, pos=(SW-215, 450), font_size=24)
     
+
+
+# All button for the proj
+def generate_ui():
+    ui_manager.clear_and_reset()
+    lm = 40     # Left margin
+
+    current_palette_dropdown = pgui.elements.UIDropDownMenu(options_list=p1.get_all_names(),
+                                                            starting_option=current_palette_name,
+                                                            relative_rect=pg.Rect(lm, 445, 200, 22), manager=ui_manager,
+                                                            object_id="current_palette_dropdown")
+
+    layer_one_style_dropdown = pgui.elements.UIDropDownMenu(options_list=art_styles_list,
+                                                            starting_option=layer_one_style,
+                                                            relative_rect=pg.Rect(lm, 225, 200, 22), manager=ui_manager,
+                                                            object_id="layer_one_style_dropdown")
+
+    layer_one_shape_dropdown = pgui.elements.UIDropDownMenu(options_list=art_shapes_list,
+                                                            starting_option=layer_one_shape,
+                                                            relative_rect=pg.Rect(lm, 255, 200, 22), manager=ui_manager,
+                                                            object_id="layer_one_shape_dropdown")
+
+    layer_one_complexity_slider = pgui.elements.UIHorizontalSlider(relative_rect=pg.Rect(lm, 305, 200, 22),
+                                                                   start_value=layer_one_complexity,
+                                                                   value_range=(10, 30), manager=ui_manager,
+                                                                   object_id="layer_one_complexity_slider")
+
+    layer_one_size_slider = pgui.elements.UIHorizontalSlider(relative_rect=pg.Rect(lm, 355, 200, 22),
+                                                             start_value=layer_one_magnitude[1], value_range=(50, 400),
+                                                             manager=ui_manager, object_id="layer_one_size_slider")
+
+    layer_two_style_dropdown = pgui.elements.UIDropDownMenu(options_list=art_styles_list,
+                                                            starting_option=layer_two_style,
+                                                            relative_rect=pg.Rect(SW - 200 - lm, 240, 220, 22), manager=ui_manager,
+                                                            object_id="layer_two_style_dropdown")
+
+    layer_two_shape_dropdown = pgui.elements.UIDropDownMenu(options_list=art_shapes_list,
+                                                            starting_option=layer_two_shape,
+                                                            relative_rect=pg.Rect(SW - 200 - lm, 265, 220, 22), manager=ui_manager,
+                                                            object_id="layer_two_shape_dropdown")
+
+    layer_two_complexity_slider = pgui.elements.UIHorizontalSlider(relative_rect=pg.Rect(SW - 200 - lm, 320, 220, 22),
+                                                                   start_value=layer_two_complexity,
+                                                                   value_range=(10, 30), manager=ui_manager,
+                                                                   object_id="layer_two_complexity_slider")
+
+    layer_two_size_slider = pgui.elements.UIHorizontalSlider(relative_rect=pg.Rect(SW - 200 - lm, 370, 220, 22),
+                                                             start_value=layer_two_magnitude[1], value_range=(50, 400),
+                                                             manager=ui_manager, object_id="layer_two_size_slider")
+    
+    resolution_dropdown = pgui.elements.UIDropDownMenu(options_list=resolutions_list,
+                                                       starting_option=export_resolution,
+                                                       relative_rect=pg.Rect(SW-240, 485, 200, 22), manager=ui_manager,
+                                                       object_id = "resolution_dropdown")
+                                                        
+    export_art_button = pgui.elements.UIButton(relative_rect=pg.Rect(SW - 240, SH - 100, 200, 50),
+                                               text="Export", manager=ui_manager, object_id="export_art_button")
+
+    generate_button = pgui.elements.UIButton(relative_rect=pg.Rect(lm, SH - 100, 200, 50),
+                                             text="Generate", manager=ui_manager, object_id="generate_button")
+
+    random_generate_button = pgui.elements.UIButton(relative_rect=pg.Rect(SW // 2 - 400, SH - 100, 200, 50),
+                                                    text="Generate Randomly", manager=ui_manager,
+                                                    object_id="random_generate_button")
+
+    exit_button = pgui.elements.UIButton(relative_rect=pg.Rect(SW // 2 - 100, SH - 100, 200, 50), 
+                                        text="Exit",manager=ui_manager,
+                                        object_id="exit_button")
+
+generate_ui()
+
+
+run = True
+while run:
+    delta_time = pg.time.Clock().tick(60)/1000.0
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
+            run = False
+            break
+
+      
+        if event.type == pg.USEREVENT:
+            if event.user_type == pgui.UI_BUTTON_PRESSED:
+                if event.ui_object_id == "exit_button":
+                    run = False
+                    
+                if event.ui_object_id == "generate_button":
+
+                    cp = current_color_palette.copy()
+                    bg_color = cp[randint(0, len(cp)-1)]
+                    c1.generate_bg(bg_color)
+                    cp.remove(bg_color)
+
+                    c1.generate_layer_one(art_style=layer_one_style, art_shape=layer_one_shape,
+                                          color_palette=cp, complexity=layer_one_complexity,
+                                          magnitude=layer_one_magnitude)
+                    c1.generate_layer_two(art_style=layer_two_style, art_shape=layer_two_shape,
+                                          color_palette=cp, complexity=layer_two_complexity,
+                                          magnitude=layer_two_magnitude)
+
+                    c1.blit_to_canvas()
+                    
+                if event.ui_object_id == "random_generate_button":
+                    current_color_palette = p1.get_random_palette()
+                    layer_one_style = art_styles_list[randint(0, len(art_styles_list)-1)]
+                    layer_one_shape = art_shapes_list[randint(0, len(art_shapes_list)-1)]
+                    layer_one_complexity = randint(10, 30)
+                    layer_one_magnitude[1] = randint(51, 400)
+                    layer_two_style = art_styles_list[randint(0, len(art_styles_list)-1)]
+                    layer_two_shape = art_shapes_list[randint(0, len(art_shapes_list)-1)]
+                    layer_two_complexity = randint(10, 30)
+                    layer_two_magnitude[1] = randint(51, 400)
+
+                    current_palette_name = p1.get_name_of_palette(current_color_palette)
+                    generate_ui()
+
+                    cp = current_color_palette.copy()
+                    bg_color = cp[randint(0, len(cp) - 1)]
+                    c1.generate_bg(bg_color)
+                    cp.remove(bg_color)
+
+                    c1.generate_layer_one(art_style=layer_one_style, art_shape=layer_one_shape,
+                                          color_palette=cp, complexity=layer_one_complexity,
+                                          magnitude=layer_one_magnitude)
+                    c1.generate_layer_two(art_style=layer_two_style, art_shape=layer_two_shape,
+                                          color_palette=cp, complexity=layer_two_complexity,
+                                          magnitude=layer_two_magnitude)
+
+                    c1.blit_to_canvas()
+
+               
+                if event.ui_object_id == "export_art_button":
+                    path = c1.export_art()
+                    if path:
+                        if export_resolution == resolutions_list[0]:
+                            pg.image.save(c1.canvas, path + ".png")
+                        elif export_resolution == resolutions_list[1]:
+                            pg.image.save(pg.transform.smoothscale(c1.canvas, (1920, 1080)), path + ".png")
+                        elif export_resolution == resolutions_list[2]:
+                            pg.image.save(pg.transform.smoothscale(c1.canvas, (1280, 720)), path + ".png")
+                    else:
+                        pass
+                    
+                
+            if event.user_type == pgui.UI_DROP_DOWN_MENU_CHANGED:
+                if event.ui_object_id == "resolution_dropdown":
+                    export_resolution = event.text
+                if event.ui_object_id == "current_palette_dropdown":
+                    current_color_palette = p1.get_colors_from_palette(event.text)
+                if event.ui_object_id == "layer_one_style_dropdown":
+                    layer_one_style = event.text
+                if event.ui_object_id == "layer_one_shape_dropdown":
+                    layer_one_shape = event.text
+                if event.ui_object_id == "layer_two_style_dropdown":
+                    layer_two_style = event.text
+                if event.ui_object_id == "layer_two_shape_dropdown":
+                    layer_two_shape = event.text
+
+            if event.user_type == pgui.UI_HORIZONTAL_SLIDER_MOVED:
+                if event.ui_object_id == "layer_one_complexity_slider":
+                    layer_one_complexity = event.value
+                if event.ui_object_id == "layer_one_size_slider":
+                    layer_one_magnitude[1] = event.value
+                if event.ui_object_id == "layer_two_complexity_slider":
+                    layer_two_complexity = event.value
+                if event.ui_object_id == "layer_two_size_slider":
+                    layer_two_magnitude[1] = event.value
+
+        ui_manager.process_events(event)
+
+    ui_manager.update(delta_time)
+    window.fill(background_color)
+    c1.draw(window)
+    draw_menu(window, current_color_palette)
+    ui_manager.draw_ui(window)
+    pg.display.update()
+
+pg.quit()
