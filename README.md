@@ -20,12 +20,12 @@
   - Install any IDE in your system.
   - Clone the project from my repository.
     - For the Cloning repository, follow the [GitHub Page](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-  - Install requarement.txt file or FOLLOW the instructions-
-    - Install Python ```https://www.python.org/downloads/```
-    - Install Pygame ```pip install pygame```
-    - Install pygame_gui ```pip install pygame-gui```
-    - Install TkInter ```pip install pytk```
-  - Run the project and enjoy.
+  - Install requarement.txt file or FOLLOW the instructions and paste the command to the terminal-
+    - Install Python through web browser ```https://www.python.org/downloads/```
+    - Install Pygame through terminal ```pip install pygame```
+    - Install pygame_gui through terminal ```pip install pygame-gui```
+    - Install TkInter through terminal ```pip install pytk```
+  - Run the project from the terminal ```python wallpaper_infinity.py``` and enjoy.
 
 
 ## Screenshots
