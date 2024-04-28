@@ -41,9 +41,10 @@
 
 ## Get Help From
 - Youtube | @Tech With Tim
+- [Patternpad website](https://patternpad.com/editor.html)
 - Python documentation
-- ChatGPT
 - Stack overflow
+- ChatGPT
 
   
 ## Contact
